@@ -38,3 +38,53 @@
  */
 
 // Your code goes here...
+const container = document.querySelector(".cardsContainer");
+
+const setFavoriteCards = () => {
+    const favorites = localStorage.getItem("favorites") ? localStorage.getItem("favorites").split(',') : [];
+    favorites.forEach(id => {
+        const card = document.getElementById(id);
+        if (card) {
+            card.style.backgroundColor = "red";
+            card.dataset.fav = "true";
+        }
+    });
+};
+
+setFavoriteCards();
+
+const addToFavorites = (id) => {
+    let favorites = localStorage.getItem("favorites") ? localStorage.getItem("favorites").split(',') : [];
+    if (!favorites.includes(id)) {
+        favorites.push(id);
+        localStorage.setItem("favorites", favorites.join(','));
+    }
+};
+
+const removeFromFavorites = (id) => {
+    let favorites = localStorage.getItem("favorites") ? localStorage.getItem("favorites").split(',') : [];
+    favorites = favorites.filter(favId => favId !== id);
+    localStorage.setItem("favorites", favorites.join(','));
+};
+
+const toggleFavorite = (card) => {
+    const cardId = card.id;
+    const isFavorite = card.dataset.fav === "true";
+
+    if (isFavorite) {
+        card.style.backgroundColor = "white";
+        card.dataset.fav = "false";
+        removeFromFavorites(cardId);
+    } else {
+        card.style.backgroundColor = "red";
+        card.dataset.fav = "true";
+        addToFavorites(cardId);
+    }
+};
+
+container.addEventListener("click", ({ target }) => {
+    if (target.classList.contains("card")) {
+        toggleFavorite(target);
+    }
+});
+
